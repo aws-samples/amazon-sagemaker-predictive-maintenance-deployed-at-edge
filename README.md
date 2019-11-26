@@ -806,7 +806,8 @@ Once the new model is generated, we can point the Greengrass core to both the ol
 
 Thank you very much for taking the time to complete this workshop!
 
-## License
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+
+
+
 
