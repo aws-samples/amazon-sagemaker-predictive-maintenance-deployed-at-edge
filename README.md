@@ -158,7 +158,7 @@ To get started go to the AWS Greengrass console and follow the steps below
 
 1. Groups <br/>
 2. Create Group <br/>
-3. Use easy creation <br/>
+3. Use default creation <br/>
 4. Group Name: greengrass-predictive <br/>
 5. Next <br/>
 6. Leave Name for Core untouched <br/>
@@ -201,7 +201,7 @@ This will allow Greengrass to obtain the machine learning model artifacts from y
 
 Go back to Greengrass Console. <br/>
 Go to Groups --> greengrass-predictive --> Settings <br/>
-In GroupRole, click on the "..." <br/>
+In GroupRole, click on the "Add Role" <br/>
 For IAM role, select GreengrassRole and click Save </br>
 You should see the permissions associated with the role now appear in the Settings of the Greengrass group.
 
@@ -214,13 +214,13 @@ You can find the role's arn in the summary section for the role.
 
 Copy and unpack the tar.gz-file
 
-Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your EC2 instance in the home folder. The tar.gz file's name is similar to -setup.tar.gz <br/>
+Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your Cloud9 IDE in the home folder. The tar.gz file's name is similar to -setup.tar.gz <br/>
 The tar.gz file contains keys, certificate and a configuration file (config.json) which will be used to configure your Greengrass Core. <br/>
 
 In a Cloud9 terminal:
 
 ```bash
-sudo tar zxvf <unique-string>-setup.tar.gz -C /greengrass/
+sudo tar zxvf /home/ec2-user/<unique-string>-setup.tar.gz -C /greengrass/
 ```
 
 Now you are ready to start your Greengrass core.
@@ -277,11 +277,20 @@ The IoT Thing is the Cloud representation of your IoT device, in this case the s
 8. Next Step <br/>
 9. Download connection kit for Linux/OSX and save it on your machine <br/>
 10. Next Step.
+11. Click Done
 
 In your Cloud9 terminal, right click the pred-maintenance-advanced folder and click New Folder. <br/>
 Name the New folder IotSensor <br/>
 upload the **connect_device_package.zip** file into this folder and follow the steps indicated in a new terminal window <br/>
-Click Done <br/>
+
+Unzip the **connect_device_package.zip** file in folder IoTSensor. Then change permission of start.sh script to start sending data to AWS IoT
+
+```bash
+cd /home/ec2-user/environment/IoTSensor
+unzip  connect_device_package.zip
+chmod 755 start.sh
+```
+
 **Note: you may have to enable root access in your terminal for your start shell script to excecute correctly. This can be done by typing:**
 ```bash
 sudo ./start.sh
