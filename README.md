@@ -371,7 +371,7 @@ Next --> Finish
 
 Now go the Cloud9 terminal
 
-In the Terminal clone the following Github repository: **https://github.com/stefannatu/IOT-ML-Workshop.git**
+In the Terminal clone the following Github repository: **https://github.com/aws-samples/amazon-sagemaker-predictive-maintenance-deployed-at-edge.git**
 
 Next, move the IotSensor.py and gg_discovery_api.py into the folder IotSensor. This is important because your start shell script will now execute the IotSensor.py file. 
 
@@ -419,7 +419,7 @@ Next, go to the Outputs section of the CloudFormation template and click on the 
 
 The SageMaker notebook instance should already have a github repo cloned into the home directory. 
 
-Go to the IoT-ML-Workshop directory and open **predictive-maintenance-xgboost.ipynb**.
+Go to the IoT-ML-Workshop directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets and then open **predictive-maintenance-xgboost.ipynb**.
 
 To build and train a machine learning model using Amazon SageMaker for predictive maintenance, execute each code cell and read through the text in the Markdown.
 
