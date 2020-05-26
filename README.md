@@ -419,7 +419,7 @@ Next, go to the Outputs section of the CloudFormation template and click on the 
 
 The SageMaker notebook instance should already have a github repo cloned into the home directory. 
 
-Go to the IoT-ML-Workshop directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets and then open **predictive-maintenance-xgboost.ipynb**.
+Go to the IoT-ML-Workshop directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets and then open **predictive-maintenance-xgboost.ipynb**. For a kernel, choose **conda python3**. 
 
 To build and train a machine learning model using Amazon SageMaker for predictive maintenance, execute each code cell and read through the text in the Markdown.
 
