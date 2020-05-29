@@ -439,6 +439,7 @@ Cells in notebooks containing code which should be executed have square brackets
 [*] Cell is active. Depending on the code it could take some while for a cell to execute <br/>
 [X] where X is any number like [6] means that the code in the cell has been executed <br/>
 
+
 Execute cells:
 
 Use Run at the top of the screen <br/>
@@ -451,7 +452,7 @@ From the repository you cloned in the Cloud9 environment, copy the lambda functi
 Open up a Terminal and Navigate to the folder where you downloaded the files and zip the two files together using the command
 
 ```bash
-zip predictlambda.zip predictambda.py greengrasssdk
+zip predictlambda.zip predictlambda.py greengrasssdk
 ```
 
 Next we create an IAM role for the 2 lambda functions we will need. Normally, as a best practice, we want to follow the principle of least privelege and grant the lambda functions *only* the access they need. However, for simplicity, we will cheat a little here and create a single role for both lambda functions.
