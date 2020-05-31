@@ -419,11 +419,14 @@ Next, go to the Outputs section of the CloudFormation template and click on the 
 
 The SageMaker notebook instance should already have a github repo cloned into the home directory. 
 
-Go to the IoT-ML-Workshop directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets and then open **predictive-maintenance-xgboost.ipynb**. For a kernel, choose **conda python3**. 
+Go to amazon-sagemaker-predictive-maintenance-deployed-at-edge directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets. 
+
+
+Open **predictive-maintenance-xgboost.ipynb** and run this notebook to build and train your model. For a kernel, choose **conda python3**. 
+
+**Remember to change default S3 bucket name to your bucket name (as a string in quotes) in the code cell where the Markdown prompts for a bucket. This is where your training, test and validation data will be stored, as well as your trained model artifacts.**
 
 To build and train a machine learning model using Amazon SageMaker for predictive maintenance, execute each code cell and read through the text in the Markdown.
-
-**Remember** to enter your bucket name (as a string in quotes) in the code cell where the Markdown prompts for a bucket. This is where your training, test and validation data will be stored, as well as your trained model artifacts.
 
 Note: Ignore the warning you receive when you get the Docker image in the "get_image_uri_" command. 
 
@@ -452,7 +455,7 @@ From the repository you cloned in the Cloud9 environment, copy the lambda functi
 Open up a Terminal and Navigate to the folder where you downloaded the files and zip the two files together using the command
 
 ```bash
-zip predictlambda.zip predictlambda.py greengrasssdk
+zip -r predictlambda.zip predictlambda.py greengrasssdk
 ```
 
 Next we create an IAM role for the 2 lambda functions we will need. Normally, as a best practice, we want to follow the principle of least privelege and grant the lambda functions *only* the access they need. However, for simplicity, we will cheat a little here and create a single role for both lambda functions.
@@ -525,9 +528,9 @@ In your Lambda function:
 1) Save the Lambda function and click on Actions --> Publish as new version. <br/>
 2) Leave the Version Description field blank and click Publish. <br/>
 3) Next in Actions, click Create alias. Give the alias a name and for version click the Version Number, not Latest. Hit Create. <br/>
-**Complete steps 4-5 only if you make subsequent changes to your Lambda code**
-4) If you make any subsequent changes to your Lambda code, every time you want to Save and Publish as new version under Actions. Then click on Qualifiers -> Alias. Click on the alias you just created and scroll down. <br/>
-5) Change the version to the most recent version number (This will usually be the highest number). Remember **do not** set the version to **$LATEST** Currently Greengrass does not support deploying aliases pointing to the $LATEST. <br/>
+**Complete steps 4-5 everytime you update Lambda function**
+4) If you make any subsequent changes to your Lambda code, every time you need to Save and Publish as new version. Then you need to associate Alias to the last version. To do so, click on Qualifiers -> Alias. Click on the alias you just created and scroll down. <br/>
+5) Under Alias configuration, click Edit. Change the version to the most recent version number (This will usually be the highest number). Remember **do not** set the version to **$LATEST** Currently Greengrass does not support deploying aliases pointing to the $LATEST. <br/>
 6) Go back to the Greengrass console --> Groups --> greengrass-predictive <br/>
 7) Click on Lambas --> Add Lambda --> Use Existing Lambda --> Enter *predictive-maintenance-advanced* in the search and locate your lambda function <br/>
 8) Click Next --> Choose Alias. Hit Finish <br/>
@@ -540,9 +543,9 @@ Next navigate back to your Greengrass group and click **Resources**.
 1) Choose Machine Learning  --> Add a machine learning resource <br/>
 2) Name your model **xgboost-model** <br/>
 3) For Model source, choose  Upload a Model from S3 <br/>
-4) Navigate to your S3 bucket and go to the exact sub folder until you find model.tar.gz <br/>
+4) Navigate to your S3 bucket --> folder xgb --> sagemaker-xgboost-* --> output. Click  model.tar.gz <br/>
 5) For local path enter **/greengrass-machine-learning/xgboost/** (This path has already been entered in your lambda function and must match)
-6) In Lambda Function Affiliations, select your Lambda function and click **Update**
+6) In Lambda Function Affiliations, select your Lambda function.  Choose the permission ‘Read and Write access’ , click **Save**
 
 Greengrass will now copy your model.tar.gz file to this local folder and untar the model artifacts. By associating your Lambda function with this local model path, the Lambda function knows to look in the Greengrass core to unpickle the model object and make predict calls to the model when triggered.
 
@@ -616,7 +619,7 @@ Once both Lambda functions are up and running, we simply need to add a subscript
 7. In the topic filter enter the topic name you picked for LAMBDA_TOPIC in your **predictive-maintenance-advanced** function.
 8. Next --> Finish
 
-Next click on Actions --> Deploy. Click on the Automatic Updates (recommended). This deploys all updates and changes to the Greengrass group.
+Next click on Actions --> Deploy. Click on the Automatic Detection (recommended). This deploys all updates and changes to the Greengrass group.
 
 **WARNING:** Your Deployment should be pretty quick (typically under 1 minute). If it is taking longer it is possible that the Greengrass core has shut down. To remedy this, go to the Cloud 9 Terminal and rerun the following commands:
 ```bash
