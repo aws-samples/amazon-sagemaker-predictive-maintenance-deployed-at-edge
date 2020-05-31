@@ -103,14 +103,14 @@ You can go back at any time to the Outputs section to find these values.
 
 ### Access the SageMaker Notebook Instance
 
-Go to outputs section for your stack **pred-maintenance-advanced** in the AWS CloudFormation console
+Go to outputs section for your stack **predictivemaintenance** in the AWS CloudFormation console
 
 **SageMakerInstance**: Right-click the corresponding link and select Open link in new tab. Hint: If the link is not clickable, try copying and pasting it into the address bar of a new web browser window or tab.
 You will be redirected to your SageMaker instance.
 
 ### Access the Cloud9 IDE
 
-Go to outputs section for your stack **pred-maintenance-advanced** in the AWS CloudFormation console
+Go to outputs section for your stack **predictivemaintenance** in the AWS CloudFormation console
 
 **Cloud9IDE**: Right-click the corresponding link and select Open link in new tab. Hint: If the link is not clickable, try copying and pasting it into the address bar of a new web browser window or tab.
 You will be redirected to your Cloud9 IDE
@@ -283,10 +283,10 @@ In your Cloud9 terminal, right click the pred-maintenance-advanced folder and cl
 Name the New folder IotSensor <br/>
 upload the **connect_device_package.zip** file into this folder and follow the steps indicated in a new terminal window <br/>
 
-Unzip the **connect_device_package.zip** file in folder IoTSensor. Then change permission of start.sh script to start sending data to AWS IoT
+Unzip the **connect_device_package.zip** file in folder IotSensor. Then change permission of start.sh script to start sending data to AWS IoT
 
 ```bash
-cd /home/ec2-user/environment/IoTSensor
+cd /home/ec2-user/environment/IotSensor
 unzip  connect_device_package.zip
 chmod 755 start.sh
 ```
