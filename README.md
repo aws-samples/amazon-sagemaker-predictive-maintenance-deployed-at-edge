@@ -203,12 +203,17 @@ Go back to Greengrass Console. <br/>
 Go to Groups --> greengrass-predictive --> Settings <br/>
 In GroupRole, click on the "Add Role" <br/>
 For IAM role, select GreengrassRole and click Save </br>
-You should see the permissions associated with the role now appear in the Settings of the Greengrass group.
 
-In a Cloud9 terminal:
+The Greengrass group role is an AWS Identity and Access Management (IAM) role that authorizes code running on a Greengrass core to access your AWS resources. You should see the permissions associated with the role now appear in the Settings of the Greengrass group.
+
+The Greengrass service role is an IAM service role that authorizes AWS IoT Greengrass to access resources from AWS services on your behalf. To allow AWS IoT Greengrass to access your resources, in a Cloud9 terminal run this command:
 
 ```bash
-aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/GreengrassRole
+#retrieve service role 
+aws greengrass get-service-role-for-account --region region
+
+#associate service role with your account
+aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
 ```
 You can find the role's arn in the summary section for the role.
 
@@ -279,7 +284,7 @@ The IoT Thing is the Cloud representation of your IoT device, in this case the s
 10. Next Step.
 11. Click Done
 
-In your Cloud9 terminal, right click the pred-maintenance-advanced folder and click New Folder. <br/>
+In your Cloud9 terminal, under folder **/home/ec2-user/environment**, right click the pred-maintenance-advanced folder and click New Folder. <br/>
 Name the New folder IotSensor <br/>
 upload the **connect_device_package.zip** file into this folder and follow the steps indicated in a new terminal window <br/>
 
@@ -354,7 +359,7 @@ In the Greengrass core, click on Groups --> greengrass-predictive --> Devices <b
 Click ... on the top right where it says Local Shadow Only <br/>
 Select: Sync to the Cloud <br/>
 
-For every IoT thing registered on Greengrass, IoT creates a thing shadow. When the thing shadow is syncing to the cloud, it is constantly updating itself with the most recent state of the IoT Device. The thing shadow interacts with the IoT Device and AWS IoT on a special messaging topic **$aws/things/Iot-Sensor/shadow/**
+For every IoT thing registered on Greengrass, IoT creates a thing shadow. A shadow is a JSON document that is used to store current or desired state information for a thing. When the thing shadow is syncing to the cloud, it is constantly updating itself with the most recent state of the IoT Device. AWS IoT Greengrass devices can interact with AWS IoT device shadows in an AWS IoT Greengrass group, and update the state of shadow. To do so, create the subscription following steps below. The thing shadow interacts with the IoT Device and AWS IoT on a special messaging topic **$aws/things/Iot-Sensor/shadow/**
 
 Go to Greengrass Groups --> greengrass-predictive.
 1. Go to Subscriptions <br/>
@@ -371,7 +376,7 @@ Next --> Finish
 
 Now go the Cloud9 terminal
 
-In the Terminal clone the following Github repository: **https://github.com/aws-samples/amazon-sagemaker-predictive-maintenance-deployed-at-edge.git**
+Under **/home/ec2-user/environment**, clone the following Github repository: **https://github.com/aws-samples/amazon-sagemaker-predictive-maintenance-deployed-at-edge.git**
 
 Next, move the IotSensor.py and gg_discovery_api.py into the folder IotSensor. This is important because your start shell script will now execute the IotSensor.py file. 
 
@@ -419,12 +424,14 @@ Next, go to the Outputs section of the CloudFormation template and click on the 
 
 The SageMaker notebook instance should already have a github repo cloned into the home directory. 
 
-Go to amazon-sagemaker-predictive-maintenance-deployed-at-edge directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets. 
+Go to **amazon-sagemaker-predictive-maintenance-deployed-at-edge** directory and open **Dataset_Preprocess.ipynb**. Run this notebook to generate the train and test datasets. 
 
 
 Open **predictive-maintenance-xgboost.ipynb** and run this notebook to build and train your model. For a kernel, choose **conda python3**. 
 
 **Remember to change default S3 bucket name to your bucket name (as a string in quotes) in the code cell where the Markdown prompts for a bucket. This is where your training, test and validation data will be stored, as well as your trained model artifacts.**
+
+To find S3 bucket name, go to CloudFormation and click on **predictivemaintenance** stack, click on **Outputs** and you will see your bucket nex to **S3Bucket**
 
 To build and train a machine learning model using Amazon SageMaker for predictive maintenance, execute each code cell and read through the text in the Markdown.
 
@@ -603,7 +610,7 @@ Go back to the Iot Core servive → Greengrass → Groups →greengrass-predicti
 6. In the topic filter enter: $aws/things/Iot-Sensor/shadow/update/accepted
 7. Next --> Finish
 
-Now repeat these steps, this time changing the Source --> Services --> Local Shadow Service.
+Now repeat these steps, this time changing the Source --> Services --> Local Shadow Service. Keep the target and topic filter the same with previous steps.
 
 
 ## Configure Subscriptions and Deploy the solution
