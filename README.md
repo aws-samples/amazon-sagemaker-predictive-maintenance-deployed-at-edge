@@ -365,7 +365,7 @@ Click *save as new version*.
 
 Next we will replace the simple Hello World messages coming through from the Iot device with actual sensor data. 
 
-### 5.4. Set up the IoT sensor
+### 5.4 Set up the IoT sensor
 
 To start sending sensor messages to the Greengrass core and AWS IoT complete the following steps.
 
