@@ -22,6 +22,23 @@ In this workshop, you will apply Machine learning to a predictive maintenance us
 6. [Explore data, build, train and deploy a model in Amazon SageMaker](#6-explore-data-build-train-and-deploy-a-model-in-amazon-sagemaker)
 7. [Deploy the predictive-maintenance-advanced Lambda](#7-deploy-the-predictive-maintenance-advanced-lambda)
 
+    7.1 [Create Lambda function to deploy to Greengrass Core](#71-create-lambda-function-to-deploy-to-greengrass-core)
+    
+    7.2 [Create a SNS topic](#72-create-a-sns-topic)
+
+    7.3 [Deploy the Lambda function locally to Greengrass Core](#73-deploy-the-lambda-function-locally-to-greengrass-core)
+
+8. [Create Polly Lambda function](#8-create-polly-lambda)
+9. [Configure Lambda function to read data from sensors](#8-configure-lambda-function-to-read-data-from-sensors)
+10. [Configure Lambda function to send prediction to AWS IoT and deploy the solution](#10-configure-lambda-function-to-send-prediction-to-aws-iot-and-deploy-the-solution)
+
+    10.1 [Configure Lambda function](#101-configure-lambda-function)
+    
+    10.2 [Deploy lambda function to Greengrass Core](#102-deploy-lambda-function-to-greengrass-core)
+
+    10.3 [Troubleshooting](#103-troubleshooting)
+
+    10.4 [Trigger Polly](#104-trigger-polly)
 
 ## 1. Solution overview
 
@@ -522,7 +539,7 @@ Study the lambda code:
 3) The lambda function notifies AWS Iot that a prediction has been made <br/>
 4) If the prediction is faulty (```python pred == 1```), the Lambda function sends a message to SNS (you will need to create SNS topic in next step)
 
-### 7.2. Create an SNS topic
+### 7.2. Create a SNS topic
 
 To receive a notification if the prediction is faulty, you create SNS topic and subscribe your email to this topic. In the AWS Console, navigate to SNS and Click Topics on the left hand panel.
 
@@ -612,7 +629,7 @@ In the second row enter VoiceId. On the right box enter a string corresponding t
 
 Once you are done, hit Save.
 
-## 9. Configure Lambda function predictive-maintenance-advanced to receive data from sensors
+## 9. Configure Lambda function to read data from sensors
 
 Once your Lambda function is deployed on Greengrass Group, in order for the Lambda to start receiving data from sensors, you need to create a subscription from the Iot-Sensor and the Local Shadow service to the lambda function.
 
@@ -678,7 +695,7 @@ cat predictive-maintenance-advanced.log
 ```
 Inspect the logs to find the error. If needed make the necessary changes to the Lambda function, Save and Publish as a new version. Point the alias to the new version number and redeploy the Greengrass core. 
 
-### 10.4. Triggering Polly
+### 10.4. Trigger Polly
 
 The default Lambda code only sends a message to SNS if a faulty part is found. Since the data is heavily imbalanced, it may take a long time for a faulty part to be observed. 
 
