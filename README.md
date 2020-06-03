@@ -518,7 +518,7 @@ Now we are ready to create this lamdab function. Next navigate to the Lambda con
 1. Click on Create Function <br/>
 2. Choose Author from Scratch <br/>
 3. Call the function **predictive-maintenance-advanced** <br/>
-4. For RunTime choose Python 2.7 <br/>
+4. For RunTime choose **Python 3.7** <br/>
 5. For IAM, expand the arrow under permissions titled "choose or create an execution role" and click on Use an existing role and find the role you just create **Predictivelambdarole** in the drop down menu. <br/>
 6. Hit Create Function.
 
@@ -610,8 +610,9 @@ Next we will trigger this lambda function using SNS.
 5. In the Function Code menu, select **Edit Code Inline** <br/>
 6. In a separate window, from the Cloud 9 Terminal, navigate to the folder where you cloned the Git Repo, select and open PollyLambda.py <br/>
 7. Delete the default handler code and copy and paste the code in the Lambda function <br/>
-8. For Runtime Choose Python 2.7 <br/>
+8. For Runtime Choose Python 3.7 <br/>
 9. In the Handler, replace with lambda_function.lambda_handler. <br/>
+10. Increase timeout limit for this function by scrolling down to 'Basic settings', click Edit, increase timeout from 3 to 30 seconds. Click Save
 
 Examine this Lambda function. It is triggered whenever a message is published to the SNS topic you created earlier. Upon this trigger, lambda is authorized to invoke Amazon Polly, an AI service which converts text into lifelike speech.
 
