@@ -11,13 +11,13 @@ In this workshop, you will apply Machine learning to a predictive maintenance us
 4. [Getting Started: Deploy your Cloud Formation template](#4-getting-started-deploy-your-cloud-formation-template)
 5. [Install Greengrass, register IoT thing and connect to Greengrass](#5-install-greengrass-register-iot-thing-and-connect-to-greengrass)
 
-    5.1 [Provision the Greengrass group and core](#5.1.-provision-the-greengrass-group-and-core)
+    5.1 [Provision the Greengrass group and core](#51-provision-the-greengrass-group-and-core)
     
-    5.2 [Register an IoT Thing with AWS IoT](#5.2.-register-an-iot-thing-with-aws-iot)
+    5.2 [Register an IoT Thing with AWS IoT](#52-register-an-iot-thing-with-aws-iot)
 
-    5.3 [Register IoT Device with AWS Greengrass](#5.3-register-iot-device-with-aws-greengrass)
+    5.3 [Register IoT Device with AWS Greengrass](#53-register-iot-device-with-aws-greengrass)
 
-    5.4 [Set up the IoT sensor](#5.4-set-up-the-iot-sensor)
+    5.4 [Set up the IoT sensor](#54-set-up-the-iot-sensor)
     
 6. [Explore data, build, train and deploy a model in Amazon SageMaker](#6-explore-data-build-train-and-deploy-a-model-in-amazon-sagemaker)
 7. [Deploy the predictive-maintenance-advanced Lambda](#7-deploy-the-predictive-maintenance-advanced-lambda)
