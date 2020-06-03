@@ -316,7 +316,7 @@ sudo ./start.sh
 ```
 
 
-### 5.3 Register IoT Device with AWS Greengrass
+### 5.3. Register IoT Device with AWS Greengrass
 
 Once the IoT device has been registered, we still need to connect the IoT device to Greengrass. This way, the IoT device will send messages to Greengrass and will be able to trigger Lambda functions that are deployed on the Greengrass core.
 
@@ -365,7 +365,7 @@ Click *save as new version*.
 
 Next we will replace the simple Hello World messages coming through from the Iot device with actual sensor data. 
 
-### 5.4 Set up the IoT sensor
+### 5.4. Set up the IoT sensor
 
 To start sending sensor messages to the Greengrass core and AWS IoT complete the following steps.
 
@@ -471,7 +471,7 @@ Ctrl+<Enter> on the keyboard <br/>
 
 ## 7. Deploy the predictive-maintenance-advanced Lambda
 
-### 7.1 Create Lambda function to deploy to Greengrass Core
+### 7.1. Create Lambda function to deploy to Greengrass Core
 
 We will create a Lambda function that will be deployed locally to Green Core. This function will download the machine learning model that you build earlier, and use this model to do inference on incoming sensor data to predict if device failure. 
 
@@ -522,7 +522,7 @@ Study the lambda code:
 3) The lambda function notifies AWS Iot that a prediction has been made <br/>
 4) If the prediction is faulty (```python pred == 1```), the Lambda function sends a message to SNS (you will need to create SNS topic in next step)
 
-### 7.1 Create an SNS topic
+### 7.2. Create an SNS topic
 
 To receive a notification if the prediction is faulty, you create SNS topic and subscribe your email to this topic. In the AWS Console, navigate to SNS and Click Topics on the left hand panel.
 
@@ -543,7 +543,7 @@ For the LAMBDA_TOPIC, replace the topic with a different name of your choosing o
 
 Click Save
 
-### 7.3 Deploy the Lambda function locally to Greengrass Core
+### 7.3. Deploy the Lambda function locally to Greengrass Core
 
 Our Lambda function should be able to make predictions on the ML model even without internet connectivity. For this reason,the Lambda needs to be deployed on the Greengrass core and not live in the AWS Cloud.
 
@@ -612,9 +612,9 @@ In the second row enter VoiceId. On the right box enter a string corresponding t
 
 Once you are done, hit Save.
 
-## Connect Predictive Lambda to Greengrass
+## 9. Configure Lambda function predictive-maintenance-advanced to receive data from sensors
 
-Once your Lambda function is deployed on Greengrass, in order for the Lambda to start receiving events, you need to create a subscription from the Iot-Sensor and the Local Shadow service to the lambda function.
+Once your Lambda function is deployed on Greengrass Group, in order for the Lambda to start receiving data from sensors, you need to create a subscription from the Iot-Sensor and the Local Shadow service to the lambda function.
 
 Go back to the Iot Core servive → Greengrass → Groups →greengrass-predictive: 
 
@@ -629,9 +629,10 @@ Go back to the Iot Core servive → Greengrass → Groups →greengrass-predicti
 Now repeat these steps, this time changing the Source --> Services --> Local Shadow Service. Keep the target and topic filter the same with previous steps.
 
 
-## Configure Subscriptions and Deploy the solution
+## 10. Configure Lambda function to send prediction to AWS IoT and deploy the solution
 
-Once both Lambda functions are up and running, we simply need to add a subscription to let the Lambda function send messages to AWS IoT.
+### 10.1. Configure Lambda function
+Once both Lambda functions (PollyLambda and  predictive-maintenance-advanced) are up and running, we need to add a subscription to let the Lambda function on Greengrass group to send messages to AWS IoT.
 
 1. To do this, go back to your AWS Greengrass Core <br/>
 2. Click on Subscriptions <br/>
@@ -642,6 +643,7 @@ Once both Lambda functions are up and running, we simply need to add a subscript
 7. In the topic filter enter the topic name you picked for LAMBDA_TOPIC in your **predictive-maintenance-advanced** function.
 8. Next --> Finish
 
+### 10.2. Deploy lambda function to Greengrass Core
 Next click on Actions --> Deploy. Click on the Automatic Detection (recommended). This deploys all updates and changes to the Greengrass group.
 
 **WARNING:** Your Deployment should be pretty quick (typically under 1 minute). If it is taking longer it is possible that the Greengrass core has shut down. To remedy this, go to the Cloud 9 Terminal and rerun the following commands:
@@ -657,7 +659,7 @@ sudo ./start.sh
 ```
 Go to AWS IoT --> Test and subscribe to the topic you entered in your Lambda subscription and you should start seeing model inferences appearing. 
 
-### Troubleshooting
+### 10.3. Troubleshooting
 
 If you are having trouble with your lambda functions and want to check if everything is correctly deployed, go to the logs.
 
@@ -676,7 +678,7 @@ cat predictive-maintenance-advanced.log
 ```
 Inspect the logs to find the error. If needed make the necessary changes to the Lambda function, Save and Publish as a new version. Point the alias to the new version number and redeploy the Greengrass core. 
 
-### Triggering Polly
+### 10.4. Triggering Polly
 
 The default Lambda code only sends a message to SNS if a faulty part is found. Since the data is heavily imbalanced, it may take a long time for a faulty part to be observed. 
 
