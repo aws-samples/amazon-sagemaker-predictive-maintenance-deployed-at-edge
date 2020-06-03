@@ -471,7 +471,11 @@ Ctrl+<Enter> on the keyboard <br/>
 
 ## 7. Deploy the predictive-maintenance-advanced Lambda
 
-From the repository you cloned in the Cloud9 environment, copy the lambda function predictlambda.py and the folder greengrasssdk to your local device.
+### 7.1 Create Lambda function to deploy to Greengrass Core
+
+We will create a Lambda function that will be deployed locally to Green Core. This function will download the machine learning model that you build earlier, and use this model to do inference on incoming sensor data to predict if device failure. 
+
+To prepare for the code of this function, from the repository you cloned in the Cloud9 environment, copy the lambda function predictlambda.py and the folder greengrasssdk to your local device.
 
 Open up a Terminal and Navigate to the folder where you downloaded the files and zip the two files together using the command
 
@@ -479,7 +483,7 @@ Open up a Terminal and Navigate to the folder where you downloaded the files and
 zip -r predictlambda.zip predictlambda.py greengrasssdk
 ```
 
-Next we create an IAM role for the 2 lambda functions we will need. Normally, as a best practice, we want to follow the principle of least privelege and grant the lambda functions *only* the access they need. However, for simplicity, we will cheat a little here and create a single role for both lambda functions.
+Next we create an IAM role for the lambda functions to control permission. Normally, as a best practice, we want to follow the principle of least privelege and grant the lambda functions *only* the access they need. However, for simplicity, we will cheat a little here and create a single role for both lambda functions.
 
 1. Go to IAM --> Role --> Create Role --> AWS Service --> Lambda --> Next:Permissions <br/>
 2. Choose AWSLambdaBasicExecutionRole in the Roles <br/>
@@ -492,7 +496,7 @@ Now Navigate to the Role you just created. As before, we will add some policies 
 1. Click on Attach policies <br/>
 2. Attach the following policies to the role: AmazonS3FullAccess, AmazonPollyFullAccess and AmazonSNSFullAccess <br/>
 
-Next navigate to the Lambda console.
+Now we are ready to create this lamdab function. Next navigate to the Lambda console.
 
 1. Click on Create Function <br/>
 2. Choose Author from Scratch <br/>
@@ -511,9 +515,16 @@ You should see a lambda function created. Explore the Lambda function console, y
 
 You should see your Lambda code appear in the IDE. 
 
-### Create an SNS topic
+Study the lambda code:
 
-In the AWS Console, navigate to SNS and Click Topics on the left hand panel.
+1) Upon being triggered by the IoT Sensor, the lambda function extracts the relevant data point from the sensor. <br/>
+2) The Lambda function then invokes the ML model you created earlier <br/>
+3) The lambda function notifies AWS Iot that a prediction has been made <br/>
+4) If the prediction is faulty (```python pred == 1```), the Lambda function sends a message to SNS (you will need to create SNS topic in next step)
+
+### 7.1 Create an SNS topic
+
+To receive a notification if the prediction is faulty, you create SNS topic and subscribe your email to this topic. In the AWS Console, navigate to SNS and Click Topics on the left hand panel.
 
 1. Create Topic<br/>
 2. Enter a name --> Create Topic<br/>
@@ -530,17 +541,9 @@ Navigate back to the lambda function you just created and in the IDE. <br/>
 For the TOPIC_ARN, replace the existing field with the ARN of the topic you just created. <br/>
 For the LAMBDA_TOPIC, replace the topic with a different name of your choosing or leave as is. Save this topic in a text file for later use. <br/>
 
-
 Click Save
 
-Study the lambda code:
-
-1) Upon being triggered by the IoT Sensor, the lambda function extracts the relevant data point from the sensor. <br/>
-2) The Lambda function then invokes the ML model you created earlier <br/>
-3) The lambda function notifies AWS Iot that a prediction has been made <br/>
-4) If the prediction is faulty (```python pred == 1```), the Lambda function sends a message to SNS
-
-### Deploy the Lambda function locally to Greengrass Core
+### 7.3 Deploy the Lambda function locally to Greengrass Core
 
 Our Lambda function should be able to make predictions on the ML model even without internet connectivity. For this reason,the Lambda needs to be deployed on the Greengrass core and not live in the AWS Cloud.
 
@@ -572,7 +575,7 @@ Greengrass will now copy your model.tar.gz file to this local folder and untar t
 
 In Resources --> Machine Learning you should now see your machine learning model affiliated to your lambda function. If the model is still unaffiliated, give it a few seconds. If the problem persists, make sure you included the correct lambda function in the affiliations. 
 
-## Create Polly Lambda
+## 8. Create Polly Lambda
 
 Next we will create a second lambda function which is triggered whenever a message is published to the SNS topic we just created.
 
@@ -586,7 +589,6 @@ Next we will trigger this lambda function using SNS.
 2. Select the SNS topic ARN for the topic you created <br/>
 3. Make sure "Enable Trigger" box is checked <br/>
 4. Click Add <br/>
-
 
 5. In the Function Code menu, select **Edit Code Inline** <br/>
 6. In a separate window, from the Cloud 9 Terminal, navigate to the folder where you cloned the Git Repo, select and open PollyLambda.py <br/>
