@@ -11,9 +11,9 @@ In this workshop, you will apply Machine learning to a predictive maintenance us
 4. [Getting Started: Deploy your Cloud Formation template](#4-getting-started-deploy-your-cloud-formation-template)
 5. [Install Greengrass, register IoT thing and connect to Greengrass](#5-install-greengrass-register-iot-thing-and-connect-to-greengrass)
 
-    5.1 [Provision the Greengrass group and core](#5.1-provision-the-greengrass-group-and-core)
+    5.1 [Provision the Greengrass group and core](#5.1.-provision-the-greengrass-group-and-core)
     
-    5.2 [Register an IoT Thing with AWS IoT](#5.2-register-an-iot-thing-with-aws-iot)
+    5.2 [Register an IoT Thing with AWS IoT](#5.2.-register-an-iot-thing-with-aws-iot)
 
     5.3 [Register IoT Device with AWS Greengrass](#5.3-register-iot-device-with-aws-greengrass)
 
@@ -162,7 +162,7 @@ You will use this terminal to install and run the Greengrass core.
 
 ## 5. Install Greengrass, register IoT thing and connect to Greengrass
 
-### 5.1 Provision the Greengrass group and core
+### 5.1. Provision the Greengrass group and core
 
 The Greengrass group allows you to cluster resources together which need to communicate with one another. For example, multiple sensors on your factory floor, or IoT devices in your home may constitute a Greengrass group. By provisioning this group, you can also create local lambda functions which can run even when the FE goes offline. This is crucial for heavy industrial environments where consistent internet access isn't always a given.
 
@@ -282,7 +282,7 @@ If there are any problems when starting AWS Greengrass check file "crash.log" fo
 
 Your AWS Greengrass Core should now be up and running.
 
-### 5.2 Register an IoT Thing with AWS IoT.
+### 5.2. Register an IoT Thing with AWS IoT.
 
 The IoT Thing is the Cloud representation of your IoT device, in this case the sensor which is collecting data about the equipment in your factory.
 
