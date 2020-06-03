@@ -10,8 +10,8 @@ In this workshop, you will apply Machine learning to a predictive maintenance us
 3. [Architecture](#3-architecture)
 4. [Getting Started: Deploy your Cloud Formation template](#4-getting-started-deploy-your-cloud-formation-template)
 5. [Install Greengrass, register IoT thing and connect to Greengrass](#5-install-greengrass-register-iot-thing-and-connect-to-greengrass)
-5.1 [Provision the Greengrass group and core](#5.1-provision-the-greengrass-group-and-core)
-5.2 [Register an IoT Thing with AWS IoT](#5.2register-an-iot-thing-with-aws-iot)
+  5.1 [Provision the Greengrass group and core](#5.1-provision-the-greengrass-group-and-core)
+  5.2 [Register an IoT Thing with AWS IoT](#5.2register-an-iot-thing-with-aws-iot)
 
 ## 1. Solution overview
 
