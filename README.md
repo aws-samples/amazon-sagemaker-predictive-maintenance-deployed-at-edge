@@ -12,7 +12,16 @@ In this workshop, you will apply Machine learning to a predictive maintenance us
 5. [Install Greengrass, register IoT thing and connect to Greengrass](#5-install-greengrass-register-iot-thing-and-connect-to-greengrass)
 
     5.1 [Provision the Greengrass group and core](#5.1-provision-the-greengrass-group-and-core)
-    5.2 [Register an IoT Thing with AWS IoT](#5.2register-an-iot-thing-with-aws-iot)
+    
+    5.2 [Register an IoT Thing with AWS IoT](#5.2-register-an-iot-thing-with-aws-iot)
+
+    5.3 [Register IoT Device with AWS Greengrass](#5.3-register-iot-device-with-aws-greengrass)
+
+    5.4 [Set up the IoT sensor](#5.4-set-up-the-iot-sensor)
+    
+6. [Explore data, build, train and deploy a model in Amazon SageMaker](#6-explore-data-build-train-and-deploy-a-model-in-amazon-sagemaker)
+7. [Deploy the predictive-maintenance-advanced Lambda](#7-deploy-the-predictive-maintenance-advanced-lambda)
+
 
 ## 1. Solution overview
 
@@ -104,7 +113,7 @@ After you have been redirected to the Quick create stack page at the AWS CloudFo
 4. Review and scroll down to Capabilities -> check I acknowledge that AWS CloudFormation might create IAM resources. <br/>
 5. At the bottom of the page click Create stack. <br/>
 6. Wait until the complete stack is created; it should take round about 10mins. <br/>
-7. In the Outputs section for your stack in the CloudFormation console you find several values for resources that have been created: Cloud9, S3 bucket name, SageMaker instance. You can go back at any time to the Outputs section to find these values.<br/>
+7. In the Outputs section for your stack in the CloudFormation console you find several values for resources that have been created: Cloud9, S3 bucket name, SageMaker instance... You can go back at any time to the Outputs section to find these values.<br/>
 
 ### Access the SageMaker Notebook Instance
 
@@ -157,28 +166,36 @@ You will use this terminal to install and run the Greengrass core.
 
 The Greengrass group allows you to cluster resources together which need to communicate with one another. For example, multiple sensors on your factory floor, or IoT devices in your home may constitute a Greengrass group. By provisioning this group, you can also create local lambda functions which can run even when the FE goes offline. This is crucial for heavy industrial environments where consistent internet access isn't always a given.
 
-Furthermore, the Greengrass group allows you to locally deploy machine learning models in your FE, which are trained in the cloud.
+Furthermore, the Greengrass group allows you to locally deploy machine learning models in your FE, which are trained in the cloud. 
 
-To get started go to the AWS Greengrass console and follow the steps below
+**To get started go to the AWS Greengrass console and create a new Greengrass group and permission**
 
 1. Groups <br/>
 2. Create Group <br/>
-3. Use default creation <br/>
-4. Group Name: greengrass-predictive <br/>
-5. Next <br/>
-6. Leave Name for Core untouched <br/>
-7. Next <br/>
+3. Greengrass needs your permission to access other services. Click 'Grant permission' to create 'Greengrass_ServiceRole' to provide permission to Greengrass.
+4. Use default creation <br/>
+5. Group Name: greengrass-predictive <br/>
+6. Next <br/>
+7. Leave Name for Core untouched <br/>
+8. Next <br/>
 8. Create Group and Core <br/>
-9. Download these resources as a tar.gz (A tar.gz-file which contains key/certificate and configuration for Greengrass) <br/>
-10. Finish (you might need to scroll down to find this button) !!! Don't forget to click "Finish". Otherwise your group will not be created !!! <br/>
+10. Download these resources as a tar.gz (A tar.gz-file which contains key/certificate and configuration for Greengrass) <br/>
+11. Finish (you might need to scroll down to find this button) !!! Don't forget to click "Finish". Otherwise your group will not be created !!! <br/>
 11. Verify in the AWS IoT console that your Greengrass Group has been created <br/>
 
-Greengrass -> Groups <br/>
-Create a Greengrass Service Role <br/>
+The Greengrass service role that you just create is an IAM service role that authorizes AWS IoT Greengrass to access resources in your AWS account on your behalf. You need to associate this role to current AWS account. To allow AWS IoT Greengrass to access your resources, in a Cloud9 terminal run this command: 
 
-AWS Greengrass requires access to your AWS Lambda and AWS IoT data. Therefore a service role must be created and associated with your account.
+```bash
+#retrieve service role 
+aws greengrass get-service-role-for-account --region region
 
-Use the IAM console to create an IAM role.
+#associate service role with your account
+aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
+```
+
+Now you need to create a Greengrass group role. The Greengrass group role is an AWS Identity and Access Management (IAM) role that authorizes code running on a Greengrass core to access your AWS resources. 
+
+Go to IAM console to create an IAM role.
 
 1. Roles <br/>
 2. Create role <br/>
@@ -189,12 +206,13 @@ Use the IAM console to create an IAM role.
 7. Next: Review <br/>
 8. Role name: GreengrassRole (Note that role names must be unique. You will need to keep track of the RoleARN for the rest of this workshop) <br/>
 9. Create Role <br/>
-10. After creating the role, make a note of the role ARN and use it to create your awscli command. You can find the role arn in the IAM console: <br/>
+10. After creating the role, make a note of the role ARN to use it later. <br/>
 
-
-Type GreengrassRole in the search field <br/>
-Click GreengrassRole <br/>
-You'll find the role arn in the top of the window <br/>
+You can also find the role arn in the IAM console: <br/>
+1. Go to IAM console, click Roles. <br/>
+2. Type GreengrassRole in the search field <br/>
+3. Click GreengrassRole <br/>
+4. You'll find the role arn in the top of the window <br/>
 
 For this workshop we will need to attach 2 more policies to this role.
 
@@ -204,27 +222,18 @@ For this workshop we will need to attach 2 more policies to this role.
 
 This will allow Greengrass to obtain the machine learning model artifacts from your S3 bucket for deployment. It will also alow your local lambda function to publish messages to an SNS topic and call the SNS APIs.
 
-Go back to Greengrass Console. <br/>
-Go to Groups --> greengrass-predictive --> Settings <br/>
-In GroupRole, click on the "Add Role" <br/>
-For IAM role, select GreengrassRole and click Save </br>
+Now you need to associate this role to Greengrass Group greengrass-predictive. You should see the permissions associated with the role now appear in the Settings of the Greengrass group.
 
-The Greengrass group role is an AWS Identity and Access Management (IAM) role that authorizes code running on a Greengrass core to access your AWS resources. You should see the permissions associated with the role now appear in the Settings of the Greengrass group.
+1. Go back to Greengrass Console. <br/>
+2. Go to Groups --> greengrass-predictive --> Settings <br/>
+3. In GroupRole, click on the "Add Role" <br/>
+4. For IAM role, select GreengrassRole and click Save </br>
+5. You should see the role and policies in the Settings
 
-The Greengrass service role is an IAM service role that authorizes AWS IoT Greengrass to access resources from AWS services on your behalf. To allow AWS IoT Greengrass to access your resources, in a Cloud9 terminal run this command:
 
-```bash
-#retrieve service role 
-aws greengrass get-service-role-for-account --region region
+**Copy and unpack the tar.gz-file**
 
-#associate service role with your account
-aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
-```
-You can find the role's arn in the summary section for the role.
-
-Copy and unpack the tar.gz-file
-
-Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your Cloud9 IDE in the home folder. The tar.gz file's name is similar to -setup.tar.gz <br/>
+Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your Cloud9 IDE in the home folder /home/ec2-user/. The tar.gz file's name is similar to -setup.tar.gz <br/>
 The tar.gz file contains keys, certificate and a configuration file (config.json) which will be used to configure your Greengrass Core. <br/>
 
 In a Cloud9 terminal:
@@ -307,7 +316,7 @@ sudo ./start.sh
 ```
 
 
-### Register IoT Device with AWS Greengrass
+### 5.3 Register IoT Device with AWS Greengrass
 
 Once the IoT device has been registered, we still need to connect the IoT device to Greengrass. This way, the IoT device will send messages to Greengrass and will be able to trigger Lambda functions that are deployed on the Greengrass core.
 
@@ -356,7 +365,7 @@ Click *save as new version*.
 
 Next we will replace the simple Hello World messages coming through from the Iot device with actual sensor data. 
 
-### Set up the IoT sensor
+### 5.4. Set up the IoT sensor
 
 To start sending sensor messages to the Greengrass core and AWS IoT complete the following steps.
 
@@ -409,7 +418,7 @@ Your Iot device should successfully discover the Greengrass core.
 To check that the Iot device is updating the thing shadow, go to AWS IoT --> Test --> Subscribe to topic $aws/things/Iot-Sensor/shadow/update
 If things are working correctly, you should start seeing messages coming through.
 
-### Logging
+**Troubleshoot greengrass core**
 
 If there are any errors, you can check the logs to troubleshoot. To access the logs, open a new terminal window in Cloud9. To do this, click on the + symbol and click New Terminal.
 
@@ -423,7 +432,7 @@ ls
 This will give you access to the runtime and crash logs. 
 Once a Lambda function is configured, you will also see user logs.
 
-## Explore data, build, train and deploy a model in Amazon SageMaker
+## 6. Explore data, build, train and deploy a model in Amazon SageMaker
 
 Next, go to the Outputs section of the CloudFormation template and click on the link to your SageMaker notebook instance. Alternatively, simply go to SageMaker in the AWS Console and you should find your notebook instance up and running.
 
@@ -460,7 +469,7 @@ Execute cells:
 Use Run at the top of the screen <br/>
 Ctrl+<Enter> on the keyboard <br/>
 
-## Deploy the predictive-maintenance-advanced Lambda
+## 7. Deploy the predictive-maintenance-advanced Lambda
 
 From the repository you cloned in the Cloud9 environment, copy the lambda function predictlambda.py and the folder greengrasssdk to your local device.
 
