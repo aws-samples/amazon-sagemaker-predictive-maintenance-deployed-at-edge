@@ -716,6 +716,15 @@ bash
 aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
 ```
 
+#### 10.3.3. Potential issue 3: Don't have enough space on Cloud9
+
+If you have errors related to disk runs out of space on Cloud9, run this script under /tmp to expand the disk size
+
+```
+bash
+cd /tmp
+./resize.sh
+```
 
 ### 10.4. Trigger Polly
 
