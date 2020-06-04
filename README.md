@@ -416,7 +416,7 @@ Finally open the start.sh script in Cloud9. Navigate to the last line of the scr
 ```python
 --connect-to greengrass
 ```
-The final script should look something like this:
+The final script should look something like this (note: yourhashID-ats is the unique ID for your AWS IoT endpoint. Please keep this hashID as it is in this script):
 
 ```python
 python IotSensor.py -e yourhashID-ats.iot.us-east-1.amazonaws.com -r root-CA.crt -c Iot-Sensor.cert.pem -k Iot-Sensor.private.key --connect-to greengrass
@@ -633,7 +633,7 @@ Once you are done, hit Save.
 
 Once your Lambda function is deployed on Greengrass Group, in order for the Lambda to start receiving data from sensors, you need to create a subscription from the Iot-Sensor and the Local Shadow service to the lambda function.
 
-Go back to the Iot Core servive → Greengrass → Groups →greengrass-predictive: 
+Go back to the Iot Core service → Greengrass → Groups →greengrass-predictive: 
 
 1. Click on Subscriptions <br/>
 2. Add subscription <br/>
@@ -694,6 +694,28 @@ This should show you the log files associated with your lambda function predicti
 cat predictive-maintenance-advanced.log
 ```
 Inspect the logs to find the error. If needed make the necessary changes to the Lambda function, Save and Publish as a new version. Point the alias to the new version number and redeploy the Greengrass core. 
+
+#### 10.3.1. Potential issue 1: Java8 not available
+
+In this workshop, we use Greengrass stream manager to transfer IoT data to AWS Cloud. Stream manager require Java8 to be installed on the Greengrass Core. If you see the error related to Java 8 not available. Try changing Java version on Cloud9 by running 
+
+```
+bash
+sudo update-alternatives --config java 
+```
+
+Select the option for using the Java8 package, not Java7 (usually by pressing 2)
+
+#### 10.3.1. Potential issue 2: Service role isn't associate with the account
+
+Greengrass-sevicerole should be associated to your AWS account at step 5.1. However, if you have errors related to servicerole isn't associated to your account, run this command again (remember to change the account number)
+
+```
+bash
+#associate service role with your account
+aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
+```
+
 
 ### 10.4. Trigger Polly
 
