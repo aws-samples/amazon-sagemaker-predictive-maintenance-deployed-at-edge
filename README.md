@@ -706,7 +706,7 @@ sudo update-alternatives --config java
 
 Select the option for using the Java8 package, not Java7 (usually by pressing 2)
 
-#### 10.3.1. Potential issue 2: Service role isn't associate with the account
+#### 10.3.2. Potential issue 2: Service role isn't associate with the account
 
 Greengrass-sevicerole should be associated to your AWS account at step 5.1. However, if you have errors related to servicerole isn't associated to your account, run this command again (remember to change the account number)
 
