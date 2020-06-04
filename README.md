@@ -249,8 +249,17 @@ Now you need to associate this role to Greengrass Group greengrass-predictive. Y
 
 
 **Copy and unpack the tar.gz-file**
+By default Cloud9 home folder size is 10GB. Let's expand this folder so that you will have more space to work on by running resize.sh script.
 
-Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your Cloud9 IDE in the home folder /home/ec2-user/. The tar.gz file's name is similar to -setup.tar.gz <br/>
+```
+bash
+
+cd /tmp
+./resize.sh
+
+```
+
+After expanding home folder size, you can configure Greengrass core.Copy (use S3/Cloud9 IDE as mentioned above) the downloaded tar.gz-file onto your Cloud9 IDE in the home folder /home/ec2-user/. The tar.gz file's name is similar to -setup.tar.gz <br/>
 The tar.gz file contains keys, certificate and a configuration file (config.json) which will be used to configure your Greengrass Core. <br/>
 
 In a Cloud9 terminal:
