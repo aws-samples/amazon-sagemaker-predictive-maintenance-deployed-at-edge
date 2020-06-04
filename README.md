@@ -204,7 +204,7 @@ The Greengrass service role that you just create is an IAM service role that aut
 
 ```bash
 #retrieve service role 
-aws greengrass get-service-role-for-account --region region
+aws greengrass get-service-role-for-account --region us-east-1
 
 #associate service role with your account
 aws greengrass associate-service-role-to-account --role-arn arn:aws:iam::<YOUR_AWS_ACCOUNT_ID>:role/Greengrass_ServiceRole
@@ -304,10 +304,10 @@ Your AWS Greengrass Core should now be up and running.
 The IoT Thing is the Cloud representation of your IoT device, in this case the sensor which is collecting data about the equipment in your factory.
 
 1. Go to the IoT Core <br/>
-2. Onboard <br/>
-3. Configure a Device <br/>
-4. Get started <br/>
-5. Choose Linux and Python <br/> 
+2. Onboard --> Get Started<br/>
+3. Onboard a device --> Get started <br/>
+4. Review the steps to register a device --> click Get started <br/>
+5. Choose Platform Linux/OSX and AWS IoT Device SDK Python <br/> 
 6. Next <br/>
 7. Thing Name: Iot-Sensor
 8. Next Step <br/>
