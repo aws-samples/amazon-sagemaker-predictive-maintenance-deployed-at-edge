@@ -251,8 +251,7 @@ Now you need to associate this role to Greengrass Group greengrass-predictive. Y
 **Copy and unpack the tar.gz-file**
 By default Cloud9 home folder size is 10GB. Let's expand this folder so that you will have more space to work on by running resize.sh script.
 
-```
-bash
+```bash
 
 cd /tmp
 ./resize.sh
